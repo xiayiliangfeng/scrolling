@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scrolling</title>
+    <style>
+         .baiJiuProduct {
+            margin-top: 5px;
+        }
+
+         .baiJiuProductOne {
+            position: relative;
+            width:1198px;
+        }
+
+        .baiJiuProduct .baiJiuProductPpt {
+            width: 210px;
+            overflow: hidden;
+        }
+
+        .baiJiu .baiJiuProduct .baiJiuProductPpt ul {
+            width: 1260px;
+            list-style: none;
+            font-size: 0px;
+            margin-left: 0px;
+            padding-left: 0px;
+        }
+
+        .baiJiu .baiJiuProduct .baiJiuProductPpt ul li {
+            float: left;
+        }
+
+        .baiJiu .baiJiuProduct .baiJiuProductPptBtn {
+            text-align: center;
+            width: 210px;
+            position: absolute;
+            bottom: 12px;
+            list-style: none;
+        }
+
+        .baiJiu .baiJiuProduct .baiJiuProductPptBtn ul li {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #fff;
+        }
+        .baiJiu .baiJiuProduct .baiJiuProductPptBtn ul li:first-child {
+            background: #8a6d3b;
+        }
+        .baiJiuProductPptWrap{
+            width:210px;
+            float:left;
+            position:relative;
+        }
+    </style>
+</head>
+<body>
+<div class="baiJiu" id="floorOne">
+    <div class="baiJiuProduct clearfix">
+        <div class="baiJiuProductOne clearfix">
+            <div class="baiJiuProductPptWrap">
+                <div class="baiJiuProductPpt">
+                    <ul class="clearfix">
+                        <li><img src="public/images/baijiu1.jpg"></li>
+                        <li><img src="public/images/baijiu2.jpg"></li>
+                        <li><img src="public/images/baijiu3.jpg"></li>
+                        <li><img src="public/images/baijiu1.jpg"></li>
+                    </ul>
+                </div>
+                <div class="baiJiuProductPptBtn">
+                    <ul class="clearfix">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var baiJiuProductPptWrap = document.getElementsByClassName("baiJiuProductPptWrap")[0];
+    var baiJiuProductPptUl = baiJiuProductPptWrap.getElementsByTagName("ul")[0];
+    var baiJiuProductPptBtn = document.getElementsByClassName("baiJiuProductPptBtn")[0];
+    var baiJiuProductPptBtnUl = baiJiuProductPptBtn.getElementsByTagName("ul")[0];
+    var baiJiuProductPptBtnLi = baiJiuProductPptBtnUl.getElementsByTagName("li");
+    var baiJiuProductLiNumber = 0;
+    var y = null;
+    function baiJiuLunBoNext() {
+        y = y - 210;
+        if (baiJiuProductPptUl.style.marginLeft == "-630px") {
+            baiJiuProductPptBtnLi[0].style.background = "#8a6d3b";
+            baiJiuProductPptUl.style.marginLeft = "0px";
+        }
+        else {
+            for (var i = 0; i < baiJiuProductPptBtnLi.length; i++) {
+                baiJiuProductPptBtnLi[i].style.background = "#fff";
+            }
+            if (baiJiuProductLiNumber >= 2) {
+                baiJiuProductPptBtnLi[0].style.background = "#8a6d3b";
+            }
+            else {
+                baiJiuProductPptBtnLi[baiJiuProductLiNumber + 1].style.background = "#8a6d3b"
+            }
+            startMove2(baiJiuProductPptUl, y, "marginLeft");
+        }
+        baiJiuProductLiNumber++;
+        if (baiJiuProductLiNumber > 3) {
+            baiJiuProductLiNumber = 1;
+            y = -210;
+            for (var i = 0; i < baiJiuProductPptBtnLi.length; i++) {
+                baiJiuProductPptBtnLi[i].style.background = "#fff";
+            }
+            baiJiuProductPptBtnLi[baiJiuProductLiNumber].style.background = "#8a6d3b";
+            startMove2(baiJiuProductPptUl, y, "marginLeft");
+        }
+    }
+    for (var i = 0; i < baiJiuProductPptBtnLi.length; i++) {
+        baiJiuProductPptBtnLi[i].index = i;
+        baiJiuProductPptBtnLi[i].onclick = function () {
+            y = -(this.index * 210);
+            baiJiuProductLiNumber = this.index;
+            clearInterval(baiJiuProductPptWrap.timer);
+            for (var i = 0; i < baiJiuProductPptBtnLi.length; i++) {
+                baiJiuProductPptBtnLi[i].style.background = "#fff";
+            }
+            this.style.background = "#8a6d3b";
+            startMove2(baiJiuProductPptUl, y, "marginLeft");
+        }
+    }
+    baiJiuProductPptWrap.timer = setInterval(baiJiuLunBoNext, 2000);
+    baiJiuProductPptWrap.onmouseover = function () {
+        clearInterval(baiJiuProductPptWrap.timer);
+    }
+    baiJiuProductPptWrap.onmouseout = function () {
+        baiJiuProductPptWrap.timer = setInterval(baiJiuLunBoNext, 2000);
+    }
+    function getStyle(obj,name){
+        if(obj.currentStyle){
+            return obj.currentStyle[name];
+        }else{
+            return getComputedStyle(obj,false)[name];
+        }
+    }
+    function startMove(obj,iTarget,attr,obj2){
+        clearInterval(obj.timer);
+        if(obj2){
+            clearInterval(obj2.timer);
+        }
+        obj.timer=setInterval(function(){
+            var cur=0;
+            if(attr=="opacity"){
+                cur=Math.round(parseFloat(getStyle(obj,attr))*100);
+//                cur=parseFloat(getStyle(obj,attr))*100;
+            }else{
+                cur=parseInt(getStyle(obj,attr));
+            }
+            var speed=(iTarget-cur)/20;
+            speed=speed>0?Math.ceil(speed):Math.floor(speed);
+            if(cur==iTarget){
+                clearInterval(obj.timer);
+            }
+            else{
+                if(attr=="opacity"){
+                    obj.style[attr]=(cur+speed)/100;
+                    obj.style.filter="alpha(opacity:"+(cur+speed)+")";
+                }else {
+                    obj.style[attr] = cur + speed + "px";
+                }
+            }
+        },30)
+    }
+
+    function startMove2(obj,iTarget,attr){
+        clearInterval(obj.timer);
+        obj.timer=setInterval(function(){
+            var cur=0;
+            if(attr=="opacity"){
+                cur=Math.round(parseFloat(getStyle(obj,attr))*100);
+//                cur=parseFloat(getStyle(obj,attr))*100;
+            }else{
+                cur=parseInt(getStyle(obj,attr));
+            }
+            var speed=(iTarget-cur)/8;
+            speed=speed>0?Math.ceil(speed):Math.floor(speed);
+            if(cur==iTarget){
+                clearInterval(obj.timer);
+            }
+            else{
+                if(attr=="opacity"){
+                    obj.style[attr]=(cur+speed)/100;
+                    obj.style.filter="alpha(opacity:"+(cur+speed)+")";
+                }else {
+                    obj.style[attr] = cur + speed + "px";
+                }
+            }
+        },30)
+    }
+</script>
+</body>
+</html>
